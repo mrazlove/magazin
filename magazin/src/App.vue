@@ -75,6 +75,5 @@ export default {
   top: 10px;
   right: 10px;
   padding: 10px;
-  color: black;
 }
 </style>

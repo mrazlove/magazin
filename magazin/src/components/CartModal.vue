@@ -20,7 +20,8 @@ export default {
   },
   computed: {
     totalCost() {
-      return this.cart.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
+      return this.cart.reduce((sum, item) => sum + item.
+      quantity * item.product.price, 0);
     }
   }
 };
@@ -40,11 +41,11 @@ export default {
 }
 
 .modal-content {
+  color: black;
   background-color: white;
   padding: 20px;
   border-radius: 5px;
   width: 300px;
-  color: black;
 }
 
 .close {
@@ -52,6 +53,5 @@ export default {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  color: black;
 }
 </style>

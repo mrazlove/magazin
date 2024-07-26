@@ -4,7 +4,9 @@
     <span class="product-price">{{ product.price }} руб.</span>
     <button v-if="!isInCart" @click="addToCart">Купить</button>
     <div v-else>
-      <span class="kol">Количество: {{ cartItem.quantity }}</span>
+      <button @click="increaseQuantity">
+        кол-во {{ cartItem.quantity }}, +
+      </button>
     </div>
   </div>
 </template>
@@ -24,6 +26,9 @@ export default {
   },
   methods: {
     addToCart() {
+      this.$emit('add-to-cart', this.product);
+    },
+    increaseQuantity() {
       this.$emit('add-to-cart', this.product);
     }
   }
@@ -48,9 +53,4 @@ button {
   padding: 5px 10px;
   cursor: pointer;
 }
-
-.kol{
-  color: black;
-}
 </style>
-
