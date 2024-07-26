@@ -2,12 +2,19 @@
   <div id="app">
     <header>
       <h1 class="header-title">Каталог товаров</h1>
+      <div class="search-sort-container">
+        <input v-model="searchQuery" placeholder="Поиск по имени" />
+        <select v-model="sortOrder" @change="sortProducts">
+          <option value="asc">Сортировать от А до Я</option>
+          <option value="desc">Сортировать от Я до А</option>
+        </select>
+      </div>
       <button class="cart-button" @click="toggleCart">
         Корзина ({{ cartCount }})
       </button>
     </header>
     <main>
-      <ProductList :products="products" @add-to-cart="addToCart" />
+      <ProductList :products="filteredProducts" @add-to-cart="addToCart" />
     </main>
     <CartModal 
       v-if="isCartVisible" 
@@ -21,7 +28,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import ProductList from './components/ProductList.vue';
 import CartModal from './components/CartModal.vue';
 
@@ -37,6 +44,8 @@ export default {
     ]);
     const cart = ref([]);
     const isCartVisible = ref(false);
+    const searchQuery = ref('');
+    const sortOrder = ref('asc');
 
     const addToCart = (product) => {
       const cartItem = cart.value.find(item => item.product.id === product.id);
@@ -73,16 +82,31 @@ export default {
       return cart.value.reduce((sum, item) => sum + item.quantity, 0);
     });
 
+    const filteredProducts = computed(() => {
+      let filtered = products.value.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+      if (sortOrder.value === 'asc') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        filtered.sort((a, b) => b.name.localeCompare(a.name));
+      }
+      return filtered;
+    });
+
     return {
       products,
       cart,
       isCartVisible,
+      searchQuery,
+      sortOrder,
       addToCart,
       toggleCart,
       cartCount,
       increaseQuantity,
       decreaseQuantity,
       removeItem,
+      filteredProducts,
     };
   },
 };
@@ -103,5 +127,17 @@ export default {
   top: 10px;
   right: 10px;
   padding: 10px;
+}
+
+.search-sort-container {
+  margin: 10px;
+  margin-right: 30px;
+}
+
+.search-sort-container input,
+.search-sort-container select {
+  margin: 0 10px;
+  padding: 5px;
+  margin-right: 30px;
 }
 </style>
