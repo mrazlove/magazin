@@ -5,7 +5,11 @@
       <h2>Корзина</h2>
       <ul>
         <li v-for="item in cart" :key="item.product.id">
-          {{ item.product.name }} - {{ item.quantity }} x {{ item.product.price }} руб.
+          {{ item.product.name }} - 
+          {{ item.quantity }} x {{ item.product.price }} руб.
+          <button @click="$emit('increase-quantity', item.product.id)">+</button>
+          <button @click="$emit('decrease-quantity', item.product.id)">-</button>
+          <button @click="$emit('remove-item', item.product.id)">Удалить</button>
         </li>
       </ul>
       <p>Итоговая стоимость: {{ totalCost }} руб.</p>
@@ -20,8 +24,7 @@ export default {
   },
   computed: {
     totalCost() {
-      return this.cart.reduce((sum, item) => sum + item.
-      quantity * item.product.price, 0);
+      return this.cart.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
     }
   }
 };
@@ -34,6 +37,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  color: black;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -41,7 +45,7 @@ export default {
 }
 
 .modal-content {
-  color: black;
+  position: relative;
   background-color: white;
   padding: 20px;
   border-radius: 5px;

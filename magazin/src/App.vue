@@ -9,7 +9,14 @@
     <main>
       <ProductList :products="products" @add-to-cart="addToCart" />
     </main>
-    <CartModal v-if="isCartVisible" :cart="cart" @close="toggleCart" />
+    <CartModal 
+      v-if="isCartVisible" 
+      :cart="cart" 
+      @close="toggleCart" 
+      @increase-quantity="increaseQuantity"
+      @decrease-quantity="decreaseQuantity"
+      @remove-item="removeItem"
+    />
   </div>
 </template>
 
@@ -40,6 +47,24 @@ export default {
       }
     };
 
+    const increaseQuantity = (productId) => {
+      const cartItem = cart.value.find(item => item.product.id === productId);
+      if (cartItem) {
+        cartItem.quantity += 1;
+      }
+    };
+
+    const decreaseQuantity = (productId) => {
+      const cartItem = cart.value.find(item => item.product.id === productId);
+      if (cartItem && cartItem.quantity > 1) {
+        cartItem.quantity -= 1;
+      }
+    };
+
+    const removeItem = (productId) => {
+      cart.value = cart.value.filter(item => item.product.id !== productId);
+    };
+
     const toggleCart = () => {
       isCartVisible.value = !isCartVisible.value;
     };
@@ -55,6 +80,9 @@ export default {
       addToCart,
       toggleCart,
       cartCount,
+      increaseQuantity,
+      decreaseQuantity,
+      removeItem,
     };
   },
 };
