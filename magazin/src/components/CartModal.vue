@@ -1,34 +1,34 @@
 <template>
-    <div class="modal">
-      <div class="modal-content">
-        <span class="close" @click="$emit('close')">&times;</span>
-        <h2>Корзина</h2>
-        <ul>
-          <li v-for="item in cart" :key="item.id">
-            {{ item.name }} - {{ item.quantity }} x {{ item.price }} руб.
-          </li>
-        </ul>
-        <p>Итоговая стоимость: {{ totalCost }} руб.</p>
-      </div>
+  <div class="modal">
+    <div class="modal-content">
+      <span class="close" @click="$emit('close')">&times;</span>
+      <h2>Корзина</h2>
+      <ul>
+        <li v-for="item in cart" :key="item.product.id">
+          {{ item.product.name }} - {{ item.quantity }} x {{ item.product.price }} руб.
+        </li>
+      </ul>
+      <p>Итоговая стоимость: {{ totalCost }} руб.</p>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      cart: Array,
-    },
-    computed: {
-      totalCost() {
-        return this.cart.reduce((sum, item) => sum + item.quantity * item.price, 0);
-      }
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    cart: Array,
+  },
+  computed: {
+    totalCost() {
+      return this.cart.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
     }
-  };
-  </script>
-  
-  <style>
-  .modal{
-position: fixed;
+  }
+};
+</script>
+
+<style>
+.modal {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -38,15 +38,20 @@ position: fixed;
   justify-content: center;
   align-items: center;
 }
-.modal-content{
+
+.modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 5px;
+  width: 300px;
+  color: black;
 }
-.close{
+
+.close {
   position: absolute;
   top: 10px;
   right: 10px;
   cursor: pointer;
+  color: black;
 }
 </style>
