@@ -1,9 +1,12 @@
 <template>
-  <div class="modal">
-    <div class="modal-content">
+  <div class="modal" @click="closeOnBackgroundClick">
+    <div class="modal-content" @click.stop>
       <span class="close" @click="$emit('close')">&times;</span>
       <h2>Корзина</h2>
-      <ul>
+      <div v-if="cart.length === 0" class="empty-cart">
+        Корзина пуста
+      </div>
+      <ul v-else>
         <li v-for="item in cart" :key="item.product.id">
           {{ item.product.name }} - 
           {{ item.quantity }} x {{ item.product.price }} руб.
@@ -12,7 +15,10 @@
           <button @click="$emit('remove-item', item.product.id)">Удалить</button>
         </li>
       </ul>
-      <p>Итоговая стоимость: {{ totalCost }} руб.</p>
+      <div v-if="cart.length > 0">
+        <p>Итоговая стоимость: {{ totalCost }} руб.</p>
+        <button class="clear-cart" @click="$emit('clear-cart')">Очистить корзину</button>
+      </div>
     </div>
   </div>
 </template>
@@ -25,6 +31,13 @@ export default {
   computed: {
     totalCost() {
       return this.cart.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
+    }
+  },
+  methods: {
+    closeOnBackgroundClick(event) {
+      if (event.target === event.currentTarget) {
+        this.$emit('close');
+      }
     }
   }
 };
@@ -57,5 +70,24 @@ export default {
   top: 10px;
   right: 10px;
   cursor: pointer;
+}
+
+.empty-cart {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.clear-cart {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.clear-cart:hover {
+  background-color: #d32f2f;
 }
 </style>

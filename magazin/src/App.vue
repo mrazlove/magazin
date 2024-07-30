@@ -8,33 +8,41 @@
           <option value="asc">Сортировать от А до Я</option>
           <option value="desc">Сортировать от Я до А</option>
         </select>
+        <button v-if="searchQuery" @click="resetSearch">Сбросить фильтр</button>
       </div>
       <button class="cart-button" @click="toggleCart">
         Корзина ({{ cartCount }})
       </button>
     </header>
     <main>
-      <ProductList :products="filteredProducts" @add-to-cart="addToCart" />
+      <div v-if="filteredProducts.length === 0" class="no-products">
+        Ничего не найдено
+      </div>
+      <ProductList v-else :products="filteredProducts" @add-to-cart="addToCart" />
     </main>
     <CartModal 
-      v-if="isCartVisible" 
-      :cart="cart" 
-      @close="toggleCart" 
-      @increase-quantity="increaseQuantity"
-      @decrease-quantity="decreaseQuantity"
-      @remove-item="removeItem"
-    />
+    v-if="isCartVisible" 
+    :cart="cart" 
+    @close="toggleCart" 
+    @increase-quantity="increaseQuantity"
+    @decrease-quantity="decreaseQuantity"
+    @remove-item="removeItem"
+    @clear-cart="clearCart"
+    :products="filteredProducts" 
+    @add-to-cart="addToCart"
+  />
+
   </div>
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import ProductList from './components/ProductList.vue';
 import CartModal from './components/CartModal.vue';
 
 export default {
   components: {
-    ProductList,
+    ProductList, 
     CartModal,
   },
   setup() {
@@ -46,6 +54,9 @@ export default {
     const isCartVisible = ref(false);
     const searchQuery = ref('');
     const sortOrder = ref('asc');
+    const clearCart = () => {
+      cart.value = [];
+    };
 
     const addToCart = (product) => {
       const cartItem = cart.value.find(item => item.product.id === product.id);
@@ -94,6 +105,10 @@ export default {
       return filtered;
     });
 
+    const resetSearch = () => {
+      searchQuery.value = '';
+    };
+
     return {
       products,
       cart,
@@ -107,6 +122,7 @@ export default {
       decreaseQuantity,
       removeItem,
       filteredProducts,
+      resetSearch,
     };
   },
 };
@@ -138,6 +154,16 @@ export default {
 .search-sort-container select {
   margin: 0 10px;
   padding: 5px;
-  margin-right: 30px;
+}
+
+.search-sort-container button {
+  margin-left: 10px;
+  padding: 5px 10px;
+}
+
+.no-products {
+  font-size: 18px;
+  margin: 20px;
+  color: black;
 }
 </style>
